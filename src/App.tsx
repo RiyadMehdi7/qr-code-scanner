@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useKV } from '@github/spark/hooks';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 import { QRScannerView } from '@/components/QRScannerView';
 import { ScanResultCard } from '@/components/ScanResultCard';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ import { Toaster } from '@/components/ui/sonner';
 function App() {
   const [isScanning, setIsScanning] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [history, setHistory] = useKV<ScanResult[]>('scan-history', []);
+  const [history, setHistory] = useLocalStorage<ScanResult[]>('scan-history', []);
 
   const handleScan = (content: string) => {
     const newResult: ScanResult = {
