@@ -5,6 +5,7 @@ export function useQRScanner(onScan: (result: string) => void, isActive: boolean
   const videoRef = useRef<HTMLVideoElement>(null);
   const readerRef = useRef<BrowserQRCodeReader | null>(null);
   const controlsRef = useRef<any>(null);
+  const scannedCodesRef = useRef<Set<string>>(new Set());
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
@@ -12,6 +13,7 @@ export function useQRScanner(onScan: (result: string) => void, isActive: boolean
   useEffect(() => {
     if (!isActive) {
       stopScanning();
+      scannedCodesRef.current.clear();
       return;
     }
 
@@ -19,6 +21,7 @@ export function useQRScanner(onScan: (result: string) => void, isActive: boolean
 
     return () => {
       stopScanning();
+      scannedCodesRef.current.clear();
     };
   }, [isActive]);
 
@@ -50,7 +53,11 @@ export function useQRScanner(onScan: (result: string) => void, isActive: boolean
         videoRef.current!,
         (result, error) => {
           if (result) {
-            onScan(result.getText());
+            const code = result.getText();
+            if (!scannedCodesRef.current.has(code)) {
+              scannedCodesRef.current.add(code);
+              onScan(code);
+            }
           }
         }
       );

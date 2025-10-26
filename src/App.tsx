@@ -18,12 +18,6 @@ function App() {
   const [history, setHistory] = useKV<ScanResult[]>('scan-history', []);
 
   const handleScan = (content: string) => {
-    const currentHistory = history || [];
-    const lastScan = currentHistory[0];
-    if (lastScan && lastScan.content === content && Date.now() - lastScan.timestamp < 3000) {
-      return;
-    }
-
     const newResult: ScanResult = {
       id: `${Date.now()}-${Math.random()}`,
       content,
